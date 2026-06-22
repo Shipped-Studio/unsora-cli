@@ -1,0 +1,46 @@
+{
+  "name": "unsora-cli",
+  "version": "0.1.0",
+  "description": "Official CLI for Unsora — AI video, image, music, and clipping from the terminal",
+  "type": "module",
+  "bin": {
+    "unsora": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/index.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "unsora",
+    "ai",
+    "video",
+    "image",
+    "cli",
+    "wavespeed"
+  ],
+  "author": "Shipped Studio",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Shipped-Studio/unsora-cli.git"
+  },
+  "homepage": "https://docs.tryunsora.com",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "commander": "^13.1.0",
+    "conf": "^13.1.0",
+    "ora": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
