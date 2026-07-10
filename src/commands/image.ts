@@ -1,6 +1,7 @@
 import type { Command } from "commander";
 import { UnsoraClient } from "../client.js";
 import { pollUntilDone } from "../poll.js";
+import { downloadToCwd } from "../download.js";
 import { IMAGE_MODELS } from "../paths.js";
 import { exitWithError, formatTable, printJson } from "../output.js";
 
@@ -20,6 +21,8 @@ export function registerImageCommands(program: Command): void {
     .option("--resolution <res>", "Resolution")
     .option("--ref <url>", "Reference image URL (repeatable)", collect, [])
     .option("--no-wait", "Return immediately without polling")
+    .option("-o, --output <file>", "Save the result to this file path")
+    .option("--no-save", "Don't download the result file")
     .option("--json", "Output as JSON")
     .action(async (opts) => {
       const client = new UnsoraClient();
@@ -50,7 +53,16 @@ export function registerImageCommands(program: Command): void {
           { label: "Image" },
         );
 
-        const out = { id, ...result };
+        let savedTo: string | null = null;
+        if (result.outputUrl && opts.save) {
+          savedTo = await downloadToCwd(
+            result.outputUrl,
+            `unsora-image-${id}`,
+            opts.output,
+          );
+        }
+
+        const out = { ...result, id, savedTo };
         if (opts.json) printJson(out);
         else if (result.outputUrl) console.log(result.outputUrl);
         else console.log(id);
@@ -95,11 +107,15 @@ export function registerImageCommands(program: Command): void {
   image
     .command("status <id>")
     .description("Get image generation status")
+    .option("--save", "Download the result to the current directory")
     .option("--json", "Output as JSON")
-    .action(async (id: string, opts: { json?: boolean }) => {
+    .action(async (id: string, opts: { json?: boolean; save?: boolean }) => {
       const client = new UnsoraClient();
       try {
         const data = await client.getImageStatus(id);
+        if (opts.save && data.outputUrl) {
+          await downloadToCwd(data.outputUrl, `unsora-image-${id}`);
+        }
         if (opts.json) printJson(data);
         else console.log(`${data.status}${data.outputUrl ? ` — ${data.outputUrl}` : ""}`);
       } catch (err) {

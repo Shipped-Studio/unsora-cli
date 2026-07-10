@@ -1,6 +1,7 @@
 import type { Command } from "commander";
 import { UnsoraClient } from "../client.js";
 import { pollUntilDone } from "../poll.js";
+import { downloadToCwd } from "../download.js";
 import { MUSIC_MODELS } from "../paths.js";
 import { exitWithError, formatTable, printJson } from "../output.js";
 
@@ -19,6 +20,8 @@ export function registerMusicCommands(program: Command): void {
     )
     .option("--format <fmt>", "Output format: mp3 | wav | flac", "mp3")
     .option("--no-wait", "Return immediately without polling")
+    .option("-o, --output <file>", "Save the result to this file path")
+    .option("--no-save", "Don't download the result file")
     .option("--json", "Output as JSON")
     .action(async (opts) => {
       if (!opts.prompt && !opts.lyrics) {
@@ -53,7 +56,16 @@ export function registerMusicCommands(program: Command): void {
           { label: "Music", timeoutMs: 600_000 },
         );
 
-        const out = { id, ...result };
+        let savedTo: string | null = null;
+        if (result.outputUrl && opts.save) {
+          savedTo = await downloadToCwd(
+            result.outputUrl,
+            `unsora-music-${id}`,
+            opts.output,
+          );
+        }
+
+        const out = { ...result, id, savedTo };
         if (opts.json) printJson(out);
         else if (result.outputUrl) console.log(result.outputUrl);
         else console.log(id);
@@ -97,11 +109,15 @@ export function registerMusicCommands(program: Command): void {
   music
     .command("status <id>")
     .description("Get music generation status")
+    .option("--save", "Download the result to the current directory")
     .option("--json", "Output as JSON")
-    .action(async (id: string, opts: { json?: boolean }) => {
+    .action(async (id: string, opts: { json?: boolean; save?: boolean }) => {
       const client = new UnsoraClient();
       try {
         const data = await client.getMusicStatus(id);
+        if (opts.save && data.outputUrl) {
+          await downloadToCwd(data.outputUrl, `unsora-music-${id}`);
+        }
         if (opts.json) printJson(data);
         else console.log(`${data.status}${data.outputUrl ? ` — ${data.outputUrl}` : ""}`);
       } catch (err) {

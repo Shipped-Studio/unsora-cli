@@ -23,10 +23,16 @@ export async function pollUntilDone(
 
   const spinner = ora(`${label}…`).start();
   const started = Date.now();
+  let lastStatus = "";
+  const ticker = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - started) / 1000);
+    spinner.text = `${label}${lastStatus ? ` — ${lastStatus}` : ""} (${elapsed}s)`;
+  }, 1000);
 
   try {
     while (true) {
       const data = await fetchStatus(id);
+      lastStatus = data.status;
       spinner.text = `${label} — ${data.status}`;
 
       if (TERMINAL.has(data.status)) {
@@ -51,6 +57,8 @@ export async function pollUntilDone(
   } catch (err) {
     spinner.stop();
     throw err;
+  } finally {
+    clearInterval(ticker);
   }
 }
 

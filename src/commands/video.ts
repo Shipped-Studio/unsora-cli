@@ -1,6 +1,7 @@
 import type { Command } from "commander";
 import { UnsoraClient } from "../client.js";
 import { pollUntilDone } from "../poll.js";
+import { downloadToCwd } from "../download.js";
 import { exitWithError, formatTable, printJson } from "../output.js";
 
 export function registerVideoCommands(program: Command): void {
@@ -14,6 +15,8 @@ export function registerVideoCommands(program: Command): void {
     .option("-d, --duration <seconds>", "Duration in seconds", "5")
     .option("--image <url>", "Reference image URL (repeatable)", collect, [])
     .option("--no-wait", "Return immediately without polling")
+    .option("-o, --output <file>", "Save the result to this file path")
+    .option("--no-save", "Don't download the result file")
     .option("--json", "Output as JSON")
     .action(async (opts) => {
       const client = new UnsoraClient();
@@ -45,7 +48,16 @@ export function registerVideoCommands(program: Command): void {
           { label: "Video", timeoutMs: 900_000 },
         );
 
-        const out = { id, ...result };
+        let savedTo: string | null = null;
+        if (result.outputUrl && opts.save) {
+          savedTo = await downloadToCwd(
+            result.outputUrl,
+            `unsora-video-${id}`,
+            opts.output,
+          );
+        }
+
+        const out = { ...result, id, savedTo };
         if (opts.json) printJson(out);
         else if (result.outputUrl) console.log(result.outputUrl);
         else console.log(id);
@@ -89,11 +101,15 @@ export function registerVideoCommands(program: Command): void {
   video
     .command("status <id>")
     .description("Get video generation status")
+    .option("--save", "Download the result to the current directory")
     .option("--json", "Output as JSON")
-    .action(async (id: string, opts: { json?: boolean }) => {
+    .action(async (id: string, opts: { json?: boolean; save?: boolean }) => {
       const client = new UnsoraClient();
       try {
         const data = await client.getVideoStatus(id);
+        if (opts.save && data.outputUrl) {
+          await downloadToCwd(data.outputUrl, `unsora-video-${id}`);
+        }
         if (opts.json) printJson(data);
         else console.log(`${data.status}${data.outputUrl ? ` — ${data.outputUrl}` : ""}`);
       } catch (err) {

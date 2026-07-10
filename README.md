@@ -14,7 +14,7 @@ unsora auth login
 # Check credits
 unsora credits
 
-# Generate an image
+# Generate an image (saved to the current directory when done)
 unsora image create --prompt "product photo of sneakers on white background"
 
 # Generate a Seedance 2.0 video
@@ -49,8 +49,11 @@ unsora clip create --url "https://www.youtube.com/watch?v=..."
 | `unsora video create/list/status/delete` | Seedance 2.0 video |
 | `unsora music create/list/status/delete` | Mureka music |
 | `unsora clip create/list/get/status/delete` | AI clipping |
+| `unsora upgrade` | Update the CLI to the latest version |
 
 Add `--json` to most commands for scripting. Add `--no-wait` on create commands to skip polling.
+
+Completed generations are downloaded to the current directory by default (e.g. `unsora-image-<id>.png`). Use `-o <file>` to pick the path, `--no-save` to skip downloading, or `unsora image status <id> --save` to fetch a result later.
 
 ## Models
 
