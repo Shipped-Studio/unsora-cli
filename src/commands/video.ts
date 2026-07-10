@@ -12,11 +12,6 @@ export function registerVideoCommands(program: Command): void {
     .requiredOption("-p, --prompt <text>", "Generation prompt")
     .option("-r, --ratio <ratio>", "Aspect ratio", "16:9")
     .option("-d, --duration <seconds>", "Duration in seconds", "5")
-    .option(
-      "--mode <mode>",
-      "Function mode: omni_reference | first_last_frames",
-      "omni_reference",
-    )
     .option("--image <url>", "Reference image URL (repeatable)", collect, [])
     .option("--no-wait", "Return immediately without polling")
     .option("--json", "Output as JSON")
@@ -26,7 +21,6 @@ export function registerVideoCommands(program: Command): void {
         prompt: opts.prompt,
         ratio: opts.ratio,
         duration: Number(opts.duration),
-        functionMode: opts.mode,
       };
       if (opts.image?.length) body.image_files = opts.image;
 

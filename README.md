@@ -5,12 +5,8 @@ Official command-line interface for [Unsora](https://app.tryunsora.com) — gene
 ## Quick start
 
 ```bash
-# Install from GitHub (until published to npm)
-npm install -g git+https://github.com/Shipped-Studio/unsora-cli.git
-
-# Or clone and link locally
-git clone https://github.com/Shipped-Studio/unsora-cli.git
-cd unsora-cli && npm install && npm run build && npm link
+# Install
+npm install -g unsora-cli
 
 # Authenticate (get key from app.tryunsora.com → Settings → API Keys)
 unsora auth login
@@ -36,7 +32,7 @@ unsora clip create --url "https://www.youtube.com/watch?v=..."
 | Variable | Description |
 |----------|-------------|
 | `UNSORA_API_KEY` | API key (`uns_live_…` or `uns_test_…`) — overrides saved config |
-| `UNSORA_API_URL` | API base URL (default: `https://api.tryunsora.com/api/v1/public`) |
+| `UNSORA_API_URL` | API base URL (default: `https://mvp.tryunsora.com/api/v1`) |
 
 ## Commands
 
@@ -77,8 +73,8 @@ unsora models --all
 | Resource | URL |
 |----------|-----|
 | **App (try all models)** | https://app.tryunsora.com |
-| **Docs** | https://docs.tryunsora.com |
-| **API Swagger** | https://api.tryunsora.com/api-docs |
+| **Website** | https://tryunsora.com |
+| **DOCS** | https://tryunsora.com/docs |
 | **MCP (Claude/Cursor)** | https://mcp.tryunsora.com/mcp |
 
 ## Development

@@ -23,7 +23,7 @@ export const PATHS = {
   clipDelete: (id: string) => `/clippings/${id}`,
 } as const;
 
-export const DEFAULT_BASE_URL = "https://api.tryunsora.com/api/v1/public";
+export const DEFAULT_BASE_URL = "https://mvp.tryunsora.com/api/v1";
 
 /** Models exposed on the public API surface. */
 export const IMAGE_MODELS = [
@@ -66,6 +66,7 @@ export const ALL_WAVESPEED_MODELS = {
   music: [...MUSIC_MODELS],
 } as const;
 
+export const WEBSITE_URL = "https://tryunsora.com";
 export const APP_URL = "https://app.tryunsora.com";
-export const DOCS_URL = "https://docs.tryunsora.com";
-export const API_DOCS_URL = "https://api.tryunsora.com/api-docs";
+export const DOCS_URL = "https://tryunsora.com/docs";
+export const MCP_URL = "https://mcp.tryunsora.com/mcp";

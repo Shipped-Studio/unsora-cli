@@ -2,7 +2,6 @@ import type { Command } from "commander";
 import {
   ALL_WAVESPEED_MODELS,
   APP_URL,
-  API_DOCS_URL,
   DOCS_URL,
   IMAGE_MODELS,
   MUSIC_MODELS,
@@ -44,6 +43,5 @@ export function registerModelsCommand(program: Command): void {
       }
 
       console.log(`\nDocs: ${DOCS_URL}`);
-      console.log(`API:  ${API_DOCS_URL}`);
     });
 }

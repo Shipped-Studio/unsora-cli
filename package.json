@@ -24,11 +24,7 @@
   ],
   "author": "Shipped Studio",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Shipped-Studio/unsora-cli.git"
-  },
-  "homepage": "https://docs.tryunsora.com",
+  "homepage": "https://tryunsora.com",
   "engines": {
     "node": ">=20"
   },
