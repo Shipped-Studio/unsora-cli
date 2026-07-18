@@ -57,6 +57,7 @@ export const ALL_WAVESPEED_MODELS = {
     "seedance-2.0",
     "seedance-2.0-fast",
     "seedance-2.0-mini",
+    "gemini-omni-flash",
   ],
   image: [...IMAGE_MODELS],
   motionControl: [
