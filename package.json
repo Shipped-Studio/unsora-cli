@@ -1,6 +1,6 @@
 {
   "name": "unsora-cli",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Official CLI for Unsora — AI video, image, music, and clipping from the terminal",
   "type": "module",
   "bin": {
@@ -25,6 +25,13 @@
   "author": "Shipped Studio",
   "license": "MIT",
   "homepage": "https://tryunsora.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shipped-Studio/unsora-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Shipped-Studio/unsora-cli/issues"
+  },
   "engines": {
     "node": ">=20"
   },

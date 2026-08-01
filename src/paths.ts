@@ -105,3 +105,4 @@ export const WEBSITE_URL = "https://tryunsora.com";
 export const APP_URL = "https://app.tryunsora.com";
 export const DOCS_URL = "https://tryunsora.com/docs";
 export const MCP_URL = "https://mcp.tryunsora.com/mcp";
+export const GITHUB_URL = "https://github.com/Shipped-Studio/unsora-cli";

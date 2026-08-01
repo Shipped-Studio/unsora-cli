@@ -16,7 +16,7 @@ import { registerVoiceoverCommands } from "./commands/voiceover.js";
 import { registerThumbnailCommands } from "./commands/thumbnail.js";
 import { registerInfluencerCommands } from "./commands/influencer.js";
 import { registerSocialCommands } from "./commands/social.js";
-import { APP_URL, DOCS_URL, WEBSITE_URL, MCP_URL } from "./paths.js";
+import { APP_URL, DOCS_URL, GITHUB_URL, WEBSITE_URL, MCP_URL } from "./paths.js";
 
 const pkg = createRequire(import.meta.url)("../package.json") as {
   name: string;
@@ -51,7 +51,11 @@ program
     "Unsora CLI — AI video, image, music, voiceover, clipping, and social posting",
   )
   .version(pkg.version)
-  .addHelpText("before", logo());
+  .addHelpText("before", logo())
+  .addHelpText(
+    "after",
+    `\nOpen source: ${GITHUB_URL} — issues and PRs welcome.`,
+  );
 
 registerAuthCommands(program);
 registerConfigCommands(program);
@@ -75,6 +79,7 @@ program
     console.log(`  Website:   ${WEBSITE_URL}`);
     console.log(`  API docs:  ${DOCS_URL}`);
     console.log(`  MCP:       ${MCP_URL}`);
+    console.log(`  GitHub:    ${GITHUB_URL}`);
     console.log("\nGet an API key: App → Settings → API Keys");
   });
 
