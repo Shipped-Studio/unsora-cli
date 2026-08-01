@@ -166,4 +166,99 @@ export class UnsoraClient {
   async deleteClip(id: string) {
     return this.request(PATHS.clipDelete(id), { method: "DELETE" });
   }
+
+  async listVoiceoverVoices() {
+    return this.request(PATHS.voiceoverVoices);
+  }
+
+  async createVoiceover(body: Record<string, unknown>) {
+    return this.request(PATHS.voiceoverCreate, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
+  async listVoiceovers(page = 1, limit = 12) {
+    return this.request(`${PATHS.voiceoverList}?page=${page}&limit=${limit}`);
+  }
+
+  async getVoiceoverStatus(id: string): Promise<StatusData> {
+    const res = await this.request<{ data: StatusData }>(
+      PATHS.voiceoverStatus(id),
+    );
+    return res.data;
+  }
+
+  async deleteVoiceover(id: string) {
+    return this.request(PATHS.voiceoverDelete(id), { method: "DELETE" });
+  }
+
+  async createThumbnail(body: Record<string, unknown>) {
+    return this.request(PATHS.thumbnailCreate, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
+  async listThumbnails(page = 1, limit = 12) {
+    return this.request(`${PATHS.thumbnailList}?page=${page}&limit=${limit}`);
+  }
+
+  async deleteThumbnail(id: string) {
+    return this.request(PATHS.thumbnailDelete(id), { method: "DELETE" });
+  }
+
+  async createInfluencer(body: Record<string, unknown>) {
+    return this.request(PATHS.influencerCreate, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
+  async listInfluencers(page = 1, limit = 12) {
+    return this.request(`${PATHS.influencerList}?page=${page}&limit=${limit}`);
+  }
+
+  async deleteInfluencer(id: string) {
+    return this.request(PATHS.influencerDelete(id), { method: "DELETE" });
+  }
+
+  async getAccounts() {
+    return this.request(PATHS.accounts);
+  }
+
+  async createPost(body: Record<string, unknown>) {
+    return this.request(PATHS.posts, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
+  async listPosts(params: { status?: string; page?: number; limit?: number } = {}) {
+    const q = new URLSearchParams();
+    if (params.status) q.set("status", params.status);
+    if (params.page) q.set("page", String(params.page));
+    if (params.limit) q.set("limit", String(params.limit));
+    const query = q.toString();
+    return this.request(`${PATHS.posts}${query ? `?${query}` : ""}`);
+  }
+
+  async getPost(id: string) {
+    return this.request(PATHS.postGet(id));
+  }
+
+  async updatePost(id: string, body: Record<string, unknown>) {
+    return this.request(PATHS.postUpdate(id), {
+      method: "PUT",
+      body: JSON.stringify(body),
+    });
+  }
+
+  async retryPost(id: string) {
+    return this.request(PATHS.postRetry(id), { method: "POST" });
+  }
+
+  async deletePost(id: string) {
+    return this.request(PATHS.postDelete(id), { method: "DELETE" });
+  }
 }

@@ -21,7 +21,40 @@ export const PATHS = {
   clipGet: (id: string) => `/clippings/${id}`,
   clipStatus: (id: string) => `/clippings/status/${id}`,
   clipDelete: (id: string) => `/clippings/${id}`,
+  voiceoverVoices: "/voiceovers/voices",
+  voiceoverCreate: "/voiceovers/create",
+  voiceoverList: "/voiceovers/all",
+  voiceoverDelete: (id: string) => `/voiceovers/${id}`,
+  voiceoverStatus: (id: string) => `/voiceovers/status/${id}`,
+  thumbnailCreate: "/thumbnails/create",
+  thumbnailList: "/thumbnails",
+  thumbnailGet: (id: string) => `/thumbnails/${id}`,
+  thumbnailDelete: (id: string) => `/thumbnails/${id}`,
+  influencerCreate: "/influencer-studio/create",
+  influencerList: "/influencer-studio/all",
+  influencerDelete: (id: string) => `/influencer-studio/${id}`,
+  accounts: "/accounts",
+  posts: "/posts",
+  postGet: (id: string) => `/posts/${id}`,
+  postUpdate: (id: string) => `/posts/${id}`,
+  postRetry: (id: string) => `/posts/${id}/retry`,
+  postDelete: (id: string) => `/posts/${id}`,
 } as const;
+
+/**
+ * Social platforms available for connected accounts / post scheduling.
+ * Note: YouTube accounts are stored with provider "google".
+ */
+export const PLATFORMS = [
+  "youtube",
+  "tiktok",
+  "instagram",
+  "facebook",
+  "linkedin",
+  "bluesky",
+  "threads",
+  "pinterest",
+] as const;
 
 export const DEFAULT_BASE_URL = "https://mvp.tryunsora.com/api/v1";
 

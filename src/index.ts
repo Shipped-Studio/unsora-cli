@@ -12,6 +12,10 @@ import { registerVideoCommands } from "./commands/video.js";
 import { registerMusicCommands } from "./commands/music.js";
 import { registerClipCommands } from "./commands/clip.js";
 import { registerModelsCommand } from "./commands/models.js";
+import { registerVoiceoverCommands } from "./commands/voiceover.js";
+import { registerThumbnailCommands } from "./commands/thumbnail.js";
+import { registerInfluencerCommands } from "./commands/influencer.js";
+import { registerSocialCommands } from "./commands/social.js";
 import { APP_URL, DOCS_URL, WEBSITE_URL, MCP_URL } from "./paths.js";
 
 const pkg = createRequire(import.meta.url)("../package.json") as {
@@ -29,7 +33,7 @@ const LOGO = `
 
 function logo(): string {
   const art = process.stdout.isTTY ? `\x1b[36m${LOGO}\x1b[0m` : LOGO;
-  return `${art}\n  AI video, image, music & clipping — ${WEBSITE_URL}\n`;
+  return `${art}\n  AI video, image, music, voiceover, clipping & social posting — ${WEBSITE_URL}\n`;
 }
 
 const notifier = updateNotifier({ pkg });
@@ -43,7 +47,9 @@ const program = new Command();
 
 program
   .name("unsora")
-  .description("Unsora CLI — AI video, image, music, and clipping")
+  .description(
+    "Unsora CLI — AI video, image, music, voiceover, clipping, and social posting",
+  )
   .version(pkg.version)
   .addHelpText("before", logo());
 
@@ -54,6 +60,10 @@ registerImageCommands(program);
 registerVideoCommands(program);
 registerMusicCommands(program);
 registerClipCommands(program);
+registerVoiceoverCommands(program);
+registerThumbnailCommands(program);
+registerInfluencerCommands(program);
+registerSocialCommands(program);
 registerModelsCommand(program);
 
 program
