@@ -1,6 +1,6 @@
 {
   "name": "unsora-cli",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Official CLI for Unsora — AI video, image, music, and clipping from the terminal",
   "type": "module",
   "bin": {

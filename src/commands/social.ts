@@ -83,6 +83,12 @@ export function registerSocialCommands(program: Command): void {
       "ISO datetime to schedule (≥2 min ahead); omit to post now",
     )
     .option("--timezone <tz>", "IANA timezone for the schedule")
+    .option(
+      "--privacy <status>",
+      "YouTube privacy: public, private, unlisted",
+    )
+    .option("--tag <tag>", "YouTube tag (repeatable)", collect, [])
+    .option("--board <id>", "Pinterest board id (defaults to first board)")
     .option("--json", "Output as JSON")
     .action(async (opts) => {
       if (opts.video && opts.image?.length) {
@@ -105,6 +111,16 @@ export function registerSocialCommands(program: Command): void {
       }
       if (opts.schedule) body.scheduled_at = opts.schedule;
       if (opts.timezone) body.timezone = opts.timezone;
+
+      const settings: Record<string, unknown> = {};
+      if (opts.privacy || opts.tag?.length) {
+        settings.youtube = {
+          ...(opts.privacy ? { privacy_status: opts.privacy } : {}),
+          ...(opts.tag?.length ? { tags: opts.tag } : {}),
+        };
+      }
+      if (opts.board) settings.pinterest = { board_id: opts.board };
+      if (Object.keys(settings).length) body.settings = settings;
 
       try {
         const data = await client.createPost(body);
