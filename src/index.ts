@@ -16,6 +16,7 @@ import { registerVoiceoverCommands } from "./commands/voiceover.js";
 import { registerThumbnailCommands } from "./commands/thumbnail.js";
 import { registerInfluencerCommands } from "./commands/influencer.js";
 import { registerSocialCommands } from "./commands/social.js";
+import { registerUploadCommands } from "./commands/upload.js";
 import { APP_URL, DOCS_URL, GITHUB_URL, WEBSITE_URL, MCP_URL } from "./paths.js";
 
 const pkg = createRequire(import.meta.url)("../package.json") as {
@@ -68,6 +69,7 @@ registerVoiceoverCommands(program);
 registerThumbnailCommands(program);
 registerInfluencerCommands(program);
 registerSocialCommands(program);
+registerUploadCommands(program);
 registerModelsCommand(program);
 
 program

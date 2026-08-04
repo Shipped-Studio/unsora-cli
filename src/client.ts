@@ -223,6 +223,35 @@ export class UnsoraClient {
     return this.request(PATHS.influencerDelete(id), { method: "DELETE" });
   }
 
+  async uploadFromUrl(body: Record<string, unknown>) {
+    return this.request(PATHS.uploads, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
+  async createUploadSignedUrl(fileName: string) {
+    return this.request(PATHS.uploadSignedUrl, {
+      method: "POST",
+      body: JSON.stringify({ fileName }),
+    });
+  }
+
+  async completeUpload(blobName: string, fileName?: string) {
+    return this.request(PATHS.uploadComplete, {
+      method: "POST",
+      body: JSON.stringify({ blobName, fileName }),
+    });
+  }
+
+  async listUploads(page = 1, limit = 12) {
+    return this.request(`${PATHS.uploads}?page=${page}&limit=${limit}`);
+  }
+
+  async deleteUpload(id: string) {
+    return this.request(PATHS.uploadDelete(id), { method: "DELETE" });
+  }
+
   async getAccounts() {
     return this.request(PATHS.accounts);
   }
