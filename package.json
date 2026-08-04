@@ -20,7 +20,7 @@
     "video",
     "image",
     "cli",
-    "wavespeed"
+    "claude-mcp-tools"
   ],
   "author": "Shipped Studio",
   "license": "MIT",
