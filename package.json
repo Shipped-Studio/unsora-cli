@@ -1,10 +1,10 @@
 {
   "name": "unsora-cli",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Official CLI for Unsora — AI video, image, music, and clipping from the terminal",
   "type": "module",
   "bin": {
-    "unsora": "./dist/index.js"
+    "unsora": "dist/index.js"
   },
   "files": [
     "dist"
