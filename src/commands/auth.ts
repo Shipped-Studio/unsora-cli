@@ -17,7 +17,7 @@ export function registerAuthCommands(program: Command): void {
   auth
     .command("login")
     .description("Save your Unsora API key locally")
-    .option("--key <key>", "API key (uns_live_… or uns_test_…)")
+    .option("--key <key>", "API key (uns_…)")
     .action(async (opts: { key?: string }) => {
       let key = opts.key ?? process.env.UNSORA_API_KEY;
       if (!key) {

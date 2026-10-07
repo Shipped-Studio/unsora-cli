@@ -42,7 +42,7 @@ unsora post create -c "New drop 🔥" -a <account-id> --video https://... --sche
 
 | Variable | Description |
 |----------|-------------|
-| `UNSORA_API_KEY` | API key (`uns_live_…` or `uns_test_…`) — overrides saved config |
+| `UNSORA_API_KEY` | API key (`uns_…`) — overrides saved config |
 | `UNSORA_API_URL` | API base URL (default: `https://mvp.tryunsora.com/api/v1`) |
 
 ## Commands
