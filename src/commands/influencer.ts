@@ -3,6 +3,7 @@ import { UnsoraClient } from "../client.js";
 import { pollUntilDone } from "../poll.js";
 import { downloadToCwd } from "../download.js";
 import { exitWithError, formatTable, printJson } from "../output.js";
+import { IDEMPOTENCY_HELP } from "../options.js";
 
 const STYLE_MODES = [
   "ugc",
@@ -55,6 +56,7 @@ export function registerInfluencerCommands(program: Command): void {
     .option("--angle <angle>", `Camera angle (${CAMERA_ANGLES.join(", ")})`)
     .option("--style <mode>", `Style mode (${STYLE_MODES.join(", ")})`)
     .option("--age <n>", "Subject age in years (18–70)")
+    .option("--idempotency-key <key>", IDEMPOTENCY_HELP)
     .option("--no-wait", "Return immediately without polling")
     .option("--no-save", "Don't download the result files")
     .option("--json", "Output as JSON")
@@ -68,11 +70,13 @@ export function registerInfluencerCommands(program: Command): void {
       if (opts.age) body.age = Number(opts.age);
 
       try {
-        const created = await client.createInfluencer(body);
+        const created = await client.createInfluencer(body, {
+          idempotencyKey: opts.idempotencyKey,
+        });
         const ids = extractIds(created);
         if (!ids.length) exitWithError("No generation ids in response");
 
-        if (opts.noWait) {
+        if (opts.wait === false) {
           if (opts.json) printJson(created);
           else ids.forEach((id) => console.log(`Queued: ${id}`));
           return;

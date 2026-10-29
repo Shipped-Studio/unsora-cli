@@ -2,24 +2,28 @@ import type { Command } from "commander";
 import { UnsoraClient } from "../client.js";
 import { pollUntilDone } from "../poll.js";
 import { downloadToCwd } from "../download.js";
-import { IMAGE_MODELS } from "../paths.js";
 import { exitWithError, formatTable, printJson } from "../output.js";
+import { collect, IDEMPOTENCY_HELP } from "../options.js";
 
 export function registerImageCommands(program: Command): void {
   const image = program.command("image").description("Image generation");
 
   image
     .command("create")
-    .description("Create an image generation")
+    .description(
+      "Create an image (any image model from `unsora models --category image`)",
+    )
     .requiredOption("-p, --prompt <text>", "Generation prompt")
     .option(
       "-m, --model <model>",
-      `Model (${IMAGE_MODELS.join(", ")})`,
+      "Image model key, e.g. nano-banana-2, nano-banana-pro, gpt-image-2, seedream-5.0-pro",
       "nano-banana-2",
     )
-    .option("-r, --ratio <ratio>", "Aspect ratio, e.g. 16:9")
-    .option("--resolution <res>", "Resolution")
-    .option("--ref <url>", "Reference image URL (repeatable)", collect, [])
+    .option("-r, --ratio <ratio>", "Aspect ratio, e.g. 16:9 (model-dependent; auto = model default)")
+    .option("--resolution <res>", "Output size: 1k, 2k or 4k (models that offer it)")
+    .option("--quality <tier>", "Quality tier (models that offer it)")
+    .option("--ref <url>", "Reference image URL (repeatable; max depends on the model)", collect, [])
+    .option("--idempotency-key <key>", IDEMPOTENCY_HELP)
     .option("--no-wait", "Return immediately without polling")
     .option("-o, --output <file>", "Save the result to this file path")
     .option("--no-save", "Don't download the result file")
@@ -30,17 +34,21 @@ export function registerImageCommands(program: Command): void {
         prompt: opts.prompt,
         model: opts.model,
       };
-      if (opts.ratio) body.ratio = opts.ratio;
+      if (opts.ratio) body.aspectRatio = opts.ratio;
       if (opts.resolution) body.resolution = opts.resolution;
-      if (opts.ref?.length) body.referenceImageUrls = opts.ref;
+      if (opts.quality) body.quality = opts.quality;
+      if (opts.ref?.length) body.referenceImages = opts.ref;
 
       try {
-        const created = (await client.createImage(body)) as {
-          generation: { id: string };
+        const created = (await client.createImage(body, {
+          idempotencyKey: opts.idempotencyKey,
+        })) as {
+          generation?: { id: string };
         };
-        const id = created.generation.id;
+        const id = created.generation?.id;
+        if (!id) exitWithError("No generation id in response");
 
-        if (opts.noWait) {
+        if (opts.wait === false) {
           if (opts.json) printJson(created);
           else console.log(`Queued: ${id}`);
           return;
@@ -105,6 +113,31 @@ export function registerImageCommands(program: Command): void {
     });
 
   image
+    .command("get <id>")
+    .description("Show one image generation (prompt, model, output asset)")
+    .option("--save", "Download the result to the current directory")
+    .option("--json", "Output as JSON")
+    .action(async (id: string, opts: { json?: boolean; save?: boolean }) => {
+      const client = new UnsoraClient();
+      try {
+        const data = (await client.getImage(id)) as {
+          generation?: Record<string, unknown> & {
+            outputAsset?: { url?: string } | null;
+          };
+        };
+        const gen = data.generation;
+        const url = gen?.outputAsset?.url;
+        if (opts.save && url) {
+          await downloadToCwd(url, `unsora-image-${id}`);
+        }
+        if (opts.json) printJson(data);
+        else printJson(gen ?? data);
+      } catch (err) {
+        exitWithError(err instanceof Error ? err.message : "Failed");
+      }
+    });
+
+  image
     .command("status <id>")
     .description("Get image generation status")
     .option("--save", "Download the result to the current directory")
@@ -135,8 +168,4 @@ export function registerImageCommands(program: Command): void {
         exitWithError(err instanceof Error ? err.message : "Failed");
       }
     });
-}
-
-function collect(value: string, prev: string[]): string[] {
-  return prev.concat([value]);
 }

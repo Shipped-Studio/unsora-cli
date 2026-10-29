@@ -3,6 +3,7 @@ import { UnsoraClient } from "../client.js";
 import { pollUntilDone } from "../poll.js";
 import { downloadToCwd } from "../download.js";
 import { exitWithError, formatTable, printJson } from "../output.js";
+import { IDEMPOTENCY_HELP } from "../options.js";
 
 export function registerVoiceoverCommands(program: Command): void {
   const voiceover = program
@@ -28,12 +29,13 @@ export function registerVoiceoverCommands(program: Command): void {
           return;
         }
         formatTable([
-          ["VOICE", "GENDER", "ACCENT", "DESCRIPTION"],
+          ["VOICE", "GENDER", "ACCENT", "DESCRIPTION", "PREVIEW"],
           ...voices.map((v) => [
-            String(v.voice_id ?? v.name ?? ""),
+            String(v.id ?? v.voice_id ?? v.label ?? v.name ?? ""),
             String(v.gender ?? ""),
             String(v.accent ?? ""),
-            String(v.description ?? "").slice(0, 50),
+            String(v.description ?? "").slice(0, 40),
+            String(v.previewUrl ?? ""),
           ]),
         ]);
       } catch (err) {
@@ -51,6 +53,7 @@ export function registerVoiceoverCommands(program: Command): void {
     )
     .option("--stability <n>", "0–1, higher = more consistent delivery")
     .option("--similarity <n>", "0–1, how closely to match the base voice")
+    .option("--idempotency-key <key>", IDEMPOTENCY_HELP)
     .option("--no-wait", "Return immediately without polling")
     .option("-o, --output <file>", "Save the result to this file path")
     .option("--no-save", "Don't download the result file")
@@ -67,13 +70,15 @@ export function registerVoiceoverCommands(program: Command): void {
       }
 
       try {
-        const created = (await client.createVoiceover(body)) as {
+        const created = (await client.createVoiceover(body, {
+          idempotencyKey: opts.idempotencyKey,
+        })) as {
           generation?: { id: string };
         };
         const id = created.generation?.id;
         if (!id) exitWithError("No generation id in response");
 
-        if (opts.noWait) {
+        if (opts.wait === false) {
           if (opts.json) printJson(created);
           else console.log(`Queued: ${id}`);
           return;

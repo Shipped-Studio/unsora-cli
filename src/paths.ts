@@ -2,6 +2,9 @@
 export const PATHS = {
   credits: "/user/credits",
   subscription: "/user/subscription",
+  catalog: "/catalog",
+  catalogQuote: "/catalog/quote",
+  catalogGenerate: "/catalog/generate",
   imageCreate: "/image-generations/create",
   imageList: "/image-generations/all",
   imageGet: (id: string) => `/image-generations/${id}`,
@@ -21,6 +24,8 @@ export const PATHS = {
   clipGet: (id: string) => `/clippings/${id}`,
   clipStatus: (id: string) => `/clippings/status/${id}`,
   clipDelete: (id: string) => `/clippings/${id}`,
+  clipItemDelete: (id: string, clipId: string) =>
+    `/clippings/${id}/clips/${clipId}`,
   voiceoverVoices: "/voiceovers/voices",
   voiceoverCreate: "/voiceovers/create",
   voiceoverList: "/voiceovers/all",
@@ -38,9 +43,14 @@ export const PATHS = {
   uploadComplete: "/uploads/complete",
   uploadDelete: (id: string) => `/uploads/${id}`,
   accounts: "/accounts",
+  pinterestBoards: (id: string) => `/accounts/${id}/pinterest/boards`,
+  tiktokCreatorInfo: (id: string) => `/accounts/${id}/tiktok/creator-info`,
   posts: "/posts",
+  postAnalyticsSummary: "/posts/analytics/summary",
+  postAnalyticsRefresh: "/posts/analytics/refresh",
   postGet: (id: string) => `/posts/${id}`,
   postUpdate: (id: string) => `/posts/${id}`,
+  postPublish: (id: string) => `/posts/${id}/publish`,
   postRetry: (id: string) => `/posts/${id}/retry`,
   postDelete: (id: string) => `/posts/${id}`,
 } as const;
@@ -58,19 +68,19 @@ export const PLATFORMS = [
   "bluesky",
   "threads",
   "pinterest",
+  "x",
+  "google_business",
 ] as const;
 
 export const DEFAULT_BASE_URL = "https://mvp.tryunsora.com/api/v1";
 
-/** Models exposed on the public API surface. */
-export const IMAGE_MODELS = [
-  "nano-banana-2",
-  "nano-banana-pro",
-  "seedream-v5-lite",
-  "gpt-image-1.5",
-  "gpt-image-2",
-] as const;
+/** Generation categories served by GET /catalog. */
+export const CATALOG_CATEGORIES = ["video", "image", "motion-control"] as const;
 
+/**
+ * Music models (Mureka). Music is not part of GET /catalog, so this list is
+ * kept here; video, image and motion-control models come from the live catalog.
+ */
 export const MUSIC_MODELS = [
   "auto",
   "mureka-9",
@@ -79,31 +89,6 @@ export const MUSIC_MODELS = [
   "mureka-7.6",
   "mureka-7.5",
 ] as const;
-
-/** All Wavespeed-backed models in the Unsora product (web app). */
-export const ALL_WAVESPEED_MODELS = {
-  video: [
-    "kling-v3-standard",
-    "kling-v3-pro",
-    "veo-3.1",
-    "veo-3.1-fast",
-    "veo-3.1-lite",
-    "sora-2",
-    "sora-2-pro",
-    "wan-2.6",
-    "seedance-2.0",
-    "seedance-2.0-fast",
-    "seedance-2.0-mini",
-    "gemini-omni-flash",
-  ],
-  image: [...IMAGE_MODELS],
-  motionControl: [
-    "kling-mc-2.6-pro",
-    "kling-mc-3.0-pro",
-    "kling-mc-3.0-std",
-  ],
-  music: [...MUSIC_MODELS],
-} as const;
 
 export const WEBSITE_URL = "https://tryunsora.com";
 export const APP_URL = "https://app.tryunsora.com";

@@ -4,6 +4,7 @@ import { pollUntilDone } from "../poll.js";
 import { downloadToCwd } from "../download.js";
 import { MUSIC_MODELS } from "../paths.js";
 import { exitWithError, formatTable, printJson } from "../output.js";
+import { IDEMPOTENCY_HELP } from "../options.js";
 
 export function registerMusicCommands(program: Command): void {
   const music = program.command("music").description("Music generation (Mureka)");
@@ -19,6 +20,7 @@ export function registerMusicCommands(program: Command): void {
       "auto",
     )
     .option("--format <fmt>", "Output format: mp3 | wav | flac", "mp3")
+    .option("--idempotency-key <key>", IDEMPOTENCY_HELP)
     .option("--no-wait", "Return immediately without polling")
     .option("-o, --output <file>", "Save the result to this file path")
     .option("--no-save", "Don't download the result file")
@@ -37,13 +39,15 @@ export function registerMusicCommands(program: Command): void {
       if (opts.lyrics) body.lyrics = opts.lyrics;
 
       try {
-        const created = (await client.createMusic(body)) as {
+        const created = (await client.createMusic(body, {
+          idempotencyKey: opts.idempotencyKey,
+        })) as {
           generation?: { id: string };
         };
         const id = created.generation?.id;
         if (!id) exitWithError("No generation id in response");
 
-        if (opts.noWait) {
+        if (opts.wait === false) {
           if (opts.json) printJson(created);
           else console.log(`Queued: ${id}`);
           return;
@@ -101,6 +105,31 @@ export function registerMusicCommands(program: Command): void {
             String(g.model ?? ""),
           ]),
         ]);
+      } catch (err) {
+        exitWithError(err instanceof Error ? err.message : "Failed");
+      }
+    });
+
+  music
+    .command("get <id>")
+    .description("Show one music generation (prompt, lyrics, output asset)")
+    .option("--save", "Download the result to the current directory")
+    .option("--json", "Output as JSON")
+    .action(async (id: string, opts: { json?: boolean; save?: boolean }) => {
+      const client = new UnsoraClient();
+      try {
+        const data = (await client.getMusic(id)) as {
+          generation?: Record<string, unknown> & {
+            outputAsset?: { url?: string } | null;
+          };
+        };
+        const gen = data.generation;
+        const url = gen?.outputAsset?.url;
+        if (opts.save && url) {
+          await downloadToCwd(url, `unsora-music-${id}`);
+        }
+        if (opts.json) printJson(data);
+        else printJson(gen ?? data);
       } catch (err) {
         exitWithError(err instanceof Error ? err.message : "Failed");
       }

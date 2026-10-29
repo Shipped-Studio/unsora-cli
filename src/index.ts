@@ -12,6 +12,7 @@ import { registerVideoCommands } from "./commands/video.js";
 import { registerMusicCommands } from "./commands/music.js";
 import { registerClipCommands } from "./commands/clip.js";
 import { registerModelsCommand } from "./commands/models.js";
+import { registerCatalogCommands } from "./commands/catalog.js";
 import { registerVoiceoverCommands } from "./commands/voiceover.js";
 import { registerThumbnailCommands } from "./commands/thumbnail.js";
 import { registerInfluencerCommands } from "./commands/influencer.js";
@@ -71,6 +72,7 @@ registerInfluencerCommands(program);
 registerSocialCommands(program);
 registerUploadCommands(program);
 registerModelsCommand(program);
+registerCatalogCommands(program);
 
 program
   .command("open")
