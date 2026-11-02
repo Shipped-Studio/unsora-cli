@@ -23,7 +23,7 @@ export function registerAuthCommands(program: Command): void {
       if (!key) {
         const rl = createInterface({ input, output });
         key = await rl.question(
-          "Paste your API key (from app.tryunsora.com → Settings → API Keys): ",
+          "Paste your API key (from app.tryunsora.com → Developers → API keys): ",
         );
         rl.close();
       }

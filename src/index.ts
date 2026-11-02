@@ -84,7 +84,7 @@ program
     console.log(`  API docs:  ${DOCS_URL}`);
     console.log(`  MCP:       ${MCP_URL}`);
     console.log(`  GitHub:    ${GITHUB_URL}`);
-    console.log("\nGet an API key: App → Settings → API Keys");
+    console.log("\nGet an API key: App → Developers → API keys");
   });
 
 program
